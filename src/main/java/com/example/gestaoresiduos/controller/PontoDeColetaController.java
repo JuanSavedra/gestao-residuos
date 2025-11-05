@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pontos-coleta")
+@RequestMapping("/pontos-coleta")
 public class PontoDeColetaController {
 
   private final PontoDeColetaService pontoDeColetaService;

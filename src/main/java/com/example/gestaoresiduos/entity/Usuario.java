@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "TB_USUARIO")
 public class Usuario {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY) // Deixa o DB gerenciar o ID
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank(message = "Nome é obrigatório")
@@ -23,19 +23,18 @@ public class Usuario {
 
   @Email(message = "Formato de e-mail inválido")
   @NotBlank(message = "E-mail é obrigatório")
-  @Column(nullable = false, unique = true) // E-mail deve ser único
+  @Column(nullable = false, unique = true)
   private String email;
 
   @NotBlank(message = "Senha é obrigatória")
-  @Size(min = 6) // Em um projeto real, NUNCA armazene a senha em texto plano
+  @Size(min = 6)
   @Column(nullable = false)
-  private String senha; // Lembre-se: Isso será criptografado pelo Spring Security
+  private String senha;
 
-  @Enumerated(EnumType.STRING) // Grava o nome do Enum ("ROLE_USER") no DB
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Role role;
 
-  // Relacionamento: Um usuário pode ter vários registros de descarte
   @OneToMany(mappedBy = "usuario")
   private List<RegistroDescarte> registros;
 }

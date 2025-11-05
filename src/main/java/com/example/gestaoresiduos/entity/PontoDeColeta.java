@@ -18,7 +18,7 @@ public class PontoDeColeta {
   @Column(nullable = false)
   private String nome; // Ex: "Contêiner Bloco A", "Lixeira inteligente"
 
-  private String localizacao; // Pode ser "Lat/Long" ou um endereço
+  private String localizacao;
 
   @PositiveOrZero
   @Column(nullable = false)
@@ -26,5 +26,5 @@ public class PontoDeColeta {
 
   @PositiveOrZero
   @Column(nullable = false)
-  private Double nivelAtualKg = 0.0; // Inicia com 0
+  private Double nivelAtualKg = 0.0;
 }

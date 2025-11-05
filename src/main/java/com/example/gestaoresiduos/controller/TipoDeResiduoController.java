@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/residuos")
+@RequestMapping("/residuos")
 public class TipoDeResiduoController {
 
   private final TipoDeResiduoService tipoDeResiduoService;

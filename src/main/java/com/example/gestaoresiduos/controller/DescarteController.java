@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/descartes")
+@RequestMapping("/descartes")
 public class DescarteController {
 
   private final DescarteService descarteService;
