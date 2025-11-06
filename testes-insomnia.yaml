@@ -1,0 +1,335 @@
+type: collection.insomnia.rest/5.0
+name: Gestão de Resíduos
+meta:
+  id: wrk_9cd444a5dac146cfb67fa01232d61f79
+  created: 1762389348617
+  modified: 1762389348617
+  description: ""
+collection:
+  - url: http://localhost:8080/api/residuos/1/instrucoes
+    name: "[PÚBLICO] GET Instruções Resíduo"
+    meta:
+      id: req_d7fe3af328f74861b5ba0b87deaee9df
+      created: 1762389497986
+      modified: 1762389652502
+      isPrivate: false
+      description: ""
+      sortKey: -1762389497986
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/descartes
+    name: "[USER] POST Registrar Descarte (Sucesso)"
+    meta:
+      id: req_f42a8722a8894a368fd9c54070b8e117
+      created: 1762390050816
+      modified: 1762390185982
+      isPrivate: false
+      description: ""
+      sortKey: -1762390050816
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "pontoDeColetaId": 1,
+          "tipoDeResiduoId": 1,
+          "quantidadeKg": 20.0
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: user@gestao.com
+      password: user123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/descartes
+    name: "[USER] POST Registrar Descarte (Falha - Capacidade)"
+    meta:
+      id: req_ec4565d3e5f24784a19efd219a41fa33
+      created: 1762390243079
+      modified: 1762390257042
+      isPrivate: false
+      description: ""
+      sortKey: -1762389774401
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "pontoDeColetaId": 1,
+          "tipoDeResiduoId": 1,
+          "quantidadeKg": 40.0
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: user@gestao.com
+      password: user123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/residuos/99/instrucoes
+    name: "[PÚBLICO] GET Instruções (404 Not Found)"
+    meta:
+      id: req_38865e13af1a4114b249662d2e5ad561
+      created: 1762390511154
+      modified: 1762390525174
+      isPrivate: false
+      description: ""
+      sortKey: -1762389497936
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/usuarios/me/historico
+    name: "[PÚBLICO] GET Rota Protegida (401 Unauthorized)"
+    meta:
+      id: req_0166d3f249754822a8bb786af8f6c4ff
+      created: 1762390545316
+      modified: 1762390699509
+      isPrivate: false
+      description: ""
+      sortKey: -1762389497886
+    method: GET
+    parameters:
+      - id: pair_f4e5d8b6477d42ffb465738a7acab926
+        name: ""
+        value: ""
+        description: ""
+        disabled: false
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/usuarios/me/historico
+    name: "[USER] GET Histórico (Sucesso)"
+    meta:
+      id: req_85327e2c597844d7b64a308e0e8928a6
+      created: 1762390716084
+      modified: 1762390788859
+      isPrivate: false
+      description: ""
+      sortKey: -1762390716084
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: user@gestao.com
+      password: user123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/descartes
+    name: "[USER] POST Descarte (400 Falha Validação)"
+    meta:
+      id: req_ff83d72d324a476c85c02fc46665b449
+      created: 1762390831983
+      modified: 1762390888295
+      isPrivate: false
+      description: ""
+      sortKey: -1762389912608.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "pontoDeColetaId": 1,
+          "quantidadeKg": -5.0
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: user@gestao.com
+      password: user123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/pontos-coleta/alertas
+    name: "[USER] GET Alertas (403 Forbidden)"
+    meta:
+      id: req_0014afa3a9224cb3955f251adca9224f
+      created: 1762390966661
+      modified: 1762390980595
+      isPrivate: false
+      description: ""
+      sortKey: -1762390383450
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: user@gestao.com
+      password: user123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/pontos-coleta/alertas
+    name: "[COLETA] GET Alertas (Sucesso)"
+    meta:
+      id: req_2cde9d3ff595434ca985956a8cc2482f
+      created: 1762391032402
+      modified: 1762391131502
+      isPrivate: false
+      description: ""
+      sortKey: -1762391032402
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: coleta@gestao.com
+      password: coleta123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/pontos-coleta/1/esvaziar
+    name: "[COLETA] PUT Esvaziar Ponto (Sucesso)"
+    meta:
+      id: req_d640f9b97e62417dbde5fa1609e37dda
+      created: 1762391172593
+      modified: 1762391246072
+      isPrivate: false
+      description: ""
+      sortKey: -1762391172593
+    method: PUT
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: coleta@gestao.com
+      password: coleta123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/usuarios/me/historico
+    name: "[COLETA] GET Histórico (403 Forbidden)"
+    meta:
+      id: req_b87eff1b723e4044af296738b5175fec
+      created: 1762391270719
+      modified: 1762391277238
+      isPrivate: false
+      description: ""
+      sortKey: -1762390874243
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+    authentication:
+      type: basic
+      useISO88591: false
+      disabled: false
+      username: coleta@gestao.com
+      password: coleta123
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_f517f42e4115caa143f1c1d541e5ceaadcec14a8
+    created: 1762389348622
+    modified: 1762389348622
+environments:
+  name: Base Environment
+  meta:
+    id: env_f517f42e4115caa143f1c1d541e5ceaadcec14a8
+    created: 1762389348620
+    modified: 1762389348620
+    isPrivate: false

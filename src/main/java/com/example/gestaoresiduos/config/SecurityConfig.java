@@ -41,16 +41,13 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
             .csrf(csrf -> csrf.disable())
-
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
             .authorizeHttpRequests(authz -> authz
-                    .requestMatchers(HttpMethod.GET, "/api/residuos/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/pontos-coleta/alertas").hasAnyRole("ADMIN", "COLETA")
-                    .requestMatchers(HttpMethod.PUT, "/api/pontos-coleta/**").hasAnyRole("ADMIN", "COLETA")
-                    .requestMatchers(HttpMethod.POST, "/api/descartes").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/api/usuarios/me/historico").hasRole("USER")
-                    .requestMatchers(HttpMethod.POST, "/api/auth/registrar").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/residuos/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/pontos-coleta/alertas").hasAnyRole("ADMIN", "COLETA")
+                    .requestMatchers(HttpMethod.PUT, "/pontos-coleta/**").hasAnyRole("ADMIN", "COLETA")
+                    .requestMatchers(HttpMethod.POST, "/descartes").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/usuarios/me/historico").hasRole("USER")
                     .anyRequest().authenticated()
             )
 
