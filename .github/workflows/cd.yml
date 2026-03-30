@@ -1,0 +1,51 @@
+name: Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: ["Java CI with Maven"]
+    types:
+      - completed
+    branches: [main, develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set target environment
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+             echo "ENV=production" >> $GITHUB_ENV
+             echo "HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_ENV
+             echo "USER=${{ secrets.PROD_USER }}" >> $GITHUB_ENV
+          else
+             echo "ENV=staging" >> $GITHUB_ENV
+             echo "HOST=${{ secrets.STAGING_HOST }}" >> $GITHUB_ENV
+             echo "USER=${{ secrets.STAGING_USER }}" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.HOST }}
+          username: ${{ env.USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /app/gestao-residuos
+            git pull origin ${{ github.ref_name }}
+            
+            # Criar arquivo .env no servidor com os secrets
+            echo "DB_URL=jdbc:oracle:thin:@oracle-db:1521:XE" > .env
+            echo "DB_USER=system" >> .env
+            echo "DB_PASS=${{ secrets.DB_PASS }}" >> .env
+            echo "ORACLE_PASSWORD=${{ secrets.DB_PASS }}" >> .env
+            echo "ENVIRONMENT=${{ env.ENV }}" >> .env
+            
+            docker-compose down
+            docker-compose up -d --build
+            
+            echo "Deploy em ${{ env.ENV }} concluído com sucesso!"
