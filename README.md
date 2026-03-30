@@ -130,3 +130,15 @@ Nesta seção, você pode encontrar os registros visuais do funcionamento do pro
 * **Secrets:** Todas as credenciais sensíveis (senhas, chaves SSH) são gerenciadas via **GitHub Secrets**.
 * **Health Monitoring:** Endpoint `/actuator/health` configurado para monitoramento ativo.
 
+---
+
+## ✅ Checklist de Entrega
+
+- [x] **Containerização:** Dockerfile funcional com multi-stage build.
+- [x] **Orquestração:** Docker Compose configurado com redes, volumes e limites de recursos.
+- [x] **CI (Integração Contínua):** Pipeline no GitHub Actions realizando build e testes (Maven).
+- [x] **CD (Entrega Contínua):** Pipeline no GitHub Actions configurada para deploy via SSH.
+- [x] **Segurança:** Gerenciamento de credenciais via GitHub Secrets e .env.
+- [x] **Monitoramento:** Health Checks configurados via Spring Actuator e integrados ao Docker.
+- [x] **Documentação:** README.md detalhado com instruções de execução e arquitetura DevOps.
+- [x] **Evidências:** Prints de funcionamento e execução do pipeline anexados.
