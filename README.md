@@ -120,13 +120,9 @@ Utilizamos o **GitHub Actions** como ferramenta de DevOps para automatizar o cic
 
 Nesta seção, você pode encontrar os registros visuais do funcionamento do projeto:
 
-### Execução e Deploy
-* [Link/Print da Execução Local]
-* [Link/Print do Workflow de CI/CD no GitHub]
-
-### Ambientes
-* **Staging:** [Link/Print do funcionamento no ambiente de teste]
-* **Produção:** [Link/Print da aplicação rodando no servidor final]
+![alt text](<Captura de tela 2026-03-30 175106.png>)
+![alt text](<Captura de tela 2026-03-30 175119.png>)
+![alt text](<Captura de tela 2026-03-30 175241.png>)
 
 ---
 
