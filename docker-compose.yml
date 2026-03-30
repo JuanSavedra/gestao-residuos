@@ -13,20 +13,19 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
       - SERVER_PORT=8080
     depends_on:
-      oracle-db:
-        condition: service_healthy
+      - oracle-db
     networks:
       - backend-network
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/actuator/health"]
-      interval: 30s
-      timeout: 10s
+      interval: 40s
+      timeout: 20s
       retries: 5
-      start_period: 40s
+      start_period: 60s
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 768M
     restart: on-failure
 
   oracle-db:
@@ -41,15 +40,15 @@ services:
     networks:
       - backend-network
     healthcheck:
-      test: ["CMD", "bash", "-c", "sqlplus -L system/${ORACLE_PASSWORD:-oracle}@//localhost:1521/XE <<< 'SELECT 1 FROM DUAL;'"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
+      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -L system/${ORACLE_PASSWORD:-oracle}@//localhost:1521/XE"]
+      interval: 30s
+      timeout: 20s
+      retries: 15
+      start_period: 90s
     deploy:
       resources:
         limits:
-          memory: 1536M
+          memory: 2048M
 
 volumes:
   oracle-data:
