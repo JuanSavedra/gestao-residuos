@@ -46,47 +46,68 @@ O projeto foi baseado no seguinte tema:
 
 ---
 
-## 🚀 Como Executar (Requisito 6)
+## 🚀 Como Executar
 
-Este projeto é 100% containerizado. A forma correta de executá-lo é utilizando o Docker Compose.
+Este projeto é 100% containerizado e utiliza **Docker Compose** para orquestração.
 
-**Pré-requisitos:**
-* [Docker](https://www.docker.com/products/docker-desktop/) instalado e em execução.
-* Docker Compose (geralmente já vem com o Docker Desktop).
+### Pré-requisitos
+* [Docker](https://www.docker.com/products/docker-desktop/) e Docker Compose instalados.
 
-### Instruções de Execução
+### Instruções de Execução Local
 
-1.  Clone este repositório para sua máquina local.
-2.  Abra um terminal na pasta raiz do projeto (onde estão o `pom.xml` e o `docker-compose.yml`).
-3.  Execute o seguinte comando para construir a imagem da aplicação e iniciar os containers (aplicação + banco de dados):
-
+1.  **Configurar Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do projeto baseado no `.env.example`:
     ```bash
-    docker-compose up --build
+    cp .env.example .env
+    ```
+    *(Edite o arquivo `.env` se desejar alterar senhas ou portas padrão).*
+
+2.  **Iniciar o Ambiente:**
+    Execute o comando para construir e subir os containers:
+    ```bash
+    docker-compose up --build -d
     ```
 
-4.  **Aguarde.** O primeiro "up" pode demorar alguns minutos. O container do Oracle (`oracle-db`) precisa se autoconfigurar e o Maven (`build`) precisa baixar as dependências e construir o projeto.
-
-5.  A aplicação estará disponível em `http://localhost:8080/api`.
-
-### ⚠️ Aviso Importante: Startup do Oracle
-
-O banco de dados Oracle XE pode demorar de **1 a 3 minutos** para estar totalmente pronto para aceitar conexões *após* o container `oracle-db` mostrar a mensagem "DATABASE IS READY TO USE!".
-
-É possível que a aplicação Spring Boot (`gestao-residuos-app`) inicie mais rápido, tente se conectar ao banco, falhe (pois o banco ainda está "acordando") e o container da aplicação pare.
-
-**Se isso acontecer (você verá "Connection refused" nos logs), é normal.**
-
-**Solução:**
-1.  Espere o log do `oracle-db` indicar que está pronto.
-2.  Em **outro terminal**, simplesmente reinicie o container da aplicação:
+3.  **Verificar Saúde da Aplicação:**
+    O ambiente agora possui **Health Checks**. A aplicação só será considerada "saudável" (UP) quando o Spring Boot estiver totalmente pronto e conectado ao banco. Verifique o status com:
     ```bash
-    docker-compose restart app-springboot
+    docker ps
     ```
-    Isso fará com que a aplicação tente se conectar novamente, agora com o banco pronto.
+    Aguarde até que a coluna `STATUS` mostre `(healthy)` para ambos os containers.
 
-### Parando o Ambiente
+4.  A aplicação estará disponível em `http://localhost:8080/api`.
 
-Para parar todos os containers, pressione `Ctrl + C` no terminal onde o `docker-compose` está rodando, ou execute em outro terminal:
+---
 
-```bash
-docker-compose down
+## 🚀 DevOps & CI/CD (GitHub Actions)
+
+Este projeto implementa uma pipeline completa de **Integração e Entrega Contínua (CI/CD)** utilizando GitHub Actions.
+
+### Fluxo de Trabalho
+1.  **CI (Integração Contínua):** Disparado em `push` para `main` ou `develop`.
+    *   Sobe um container Oracle XE temporário no Runner.
+    *   Executa o build Maven (`mvn clean verify`).
+    *   Roda testes unitários e de integração.
+    *   Gera o artefato JAR.
+
+2.  **CD (Entrega Contínua):** Disparado após o sucesso do CI.
+    *   **Staging:** Deploys automáticos para o servidor de teste em `push` na branch `develop`.
+    *   **Production:** Deploys automáticos para o servidor de produção em `push` na branch `main`.
+
+### Configuração de Secrets no GitHub
+Para habilitar o deploy automático, configure os seguintes **Secrets** em seu repositório (**Settings > Secrets and variables > Actions**):
+
+| Secret | Descrição |
+| :--- | :--- |
+| `SSH_PRIVATE_KEY` | Chave privada SSH para acesso aos servidores. |
+| `STAGING_HOST` / `PROD_HOST` | IP ou Hostname dos servidores de Staging/Produção. |
+| `STAGING_USER` / `PROD_USER` | Usuário SSH dos servidores. |
+| `DB_PASS` | Senha do banco de dados (será injetada no `.env` do servidor). |
+
+---
+
+## 🛡️ Segurança e Boas Práticas DevOps
+* **Multi-stage Builds:** Dockerfile otimizado para imagens leves e seguras.
+* **Redes Isoladas:** Comunicação entre App e Banco via rede privada `backend-network`.
+* **Resource Limits:** Limites de memória (512MB para App, 1.5GB para Oracle) configurados via Docker Compose.
+* **Health Checks:** Monitoramento ativo da saúde dos serviços via Spring Actuator.
