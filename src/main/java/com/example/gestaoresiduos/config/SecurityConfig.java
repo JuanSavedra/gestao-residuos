@@ -43,6 +43,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
+                    .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/residuos/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/pontos-coleta/alertas").hasAnyRole("ADMIN", "COLETA")
                     .requestMatchers(HttpMethod.PUT, "/pontos-coleta/**").hasAnyRole("ADMIN", "COLETA")
