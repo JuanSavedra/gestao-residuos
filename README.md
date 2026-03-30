@@ -118,11 +118,26 @@ Utilizamos o **GitHub Actions** como ferramenta de DevOps para automatizar o cic
 
 ## 🖼️ Evidências de Funcionamento
 
-Nesta seção, você pode encontrar os registros visuais do funcionamento do projeto:
+Nesta seção, encontram-se as comprovações técnicas da execução e automação do projeto:
 
-![alt text](<Captura de tela 2026-03-30 175106.png>)
-![alt text](<Captura de tela 2026-03-30 175119.png>)
-![alt text](<Captura de tela 2026-03-30 175241.png>)
+### 1. Orquestração com Docker Compose
+Status dos containers rodando localmente, evidenciando o uso de volumes e o estado de saúde (`healthy`) do banco Oracle e da aplicação.
+![Status dos Containers](<Captura de tela 2026-03-30 175106.png>)
+
+### 2. Monitoramento de Saúde (Health Check)
+Resposta do endpoint `/actuator/health` via navegador, confirmando que a aplicação está "UP" e integrada com o banco de dados.
+![Endpoint Health Check](<Captura de tela 2026-03-30 175119.png>)
+
+### 3. Integração Contínua (CI) com GitHub Actions
+Pipeline de build e testes automatizados executada com sucesso no GitHub, validando a integridade do código Java/Maven.
+![Pipeline de CI com Sucesso](<Captura de tela 2026-03-30 175241.png>)
+![Pipeline de CI com Sucesso](<Captura de tela 2026-03-30 182543.png>)
+
+### 4. Entrega Contínua (CD) e Infraestrutura
+Registro da tentativa de deploy automático. O pipeline de CD foi configurado corretamente, porém, a conexão SSH final foi interrompida (`i/o timeout`) devido às restrições de firewall/NAT do roteador local, que impede o acesso externo ao ambiente doméstico. Este comportamento é esperado em ambientes de desenvolvimento que não possuem um IP público exposto.
+Eu poderia configurar o servidor AWS como foi ensinado, porém, tive limitações no serviço e disseram que aquilo geraria cobranças.
+![Log de Deploy via SSH](<Captura de tela 2026-03-30 182727.png>)
+![Log de Deploy via SSH](<Captura de tela 2026-03-30 182809.png>)
 
 ---
 
