@@ -33,81 +33,104 @@ O projeto foi baseado no seguinte tema:
 
 ## 🛠️ Tecnologias Utilizadas
 
-* Java 17
-* Spring Boot 3
-* Spring Data JPA (Hibernate)
-* Spring Security
-* Spring Web
-* Spring Validation
-* Maven
-* Oracle Database (Imagem Docker `gvenzl/oracle-xe:latest`)
-* Docker & Docker Compose
-* Lombok
+* **Backend:** Java 17, Spring Boot 3
+* **Persistência:** Spring Data JPA (Hibernate), Oracle Database (`gvenzl/oracle-xe:latest`)
+* **Segurança:** Spring Security (HTTP Basic Auth, Roles: `ROLE_USER`, `ROLE_ADMIN`, `ROLE_COLETA`)
+* **DevOps:** GitHub Actions (CI/CD), Docker & Docker Compose
+* **Monitoramento:** Spring Boot Actuator
+* **Auxiliares:** Maven, Lombok, Jakarta Validation
 
 ---
 
-## 🚀 Como Executar
+## 🚀 Como Executar Localmente com o Docker
 
-Este projeto é 100% containerizado e utiliza **Docker Compose** para orquestração.
+Este projeto utiliza **Docker Compose** para orquestrar a aplicação e o banco de dados. Siga os passos abaixo:
 
-### Pré-requisitos
-* [Docker](https://www.docker.com/products/docker-desktop/) e Docker Compose instalados.
+1.  **Clone o Repositório:**
+    ```bash
+    git clone <url-do-repositorio>
+    cd gestao-residuos
+    ```
 
-### Instruções de Execução Local
-
-1.  **Configurar Variáveis de Ambiente:**
+2.  **Configure as Variáveis de Ambiente:**
     Crie um arquivo `.env` na raiz do projeto baseado no `.env.example`:
     ```bash
     cp .env.example .env
     ```
-    *(Edite o arquivo `.env` se desejar alterar senhas ou portas padrão).*
 
-2.  **Iniciar o Ambiente:**
-    Execute o comando para construir e subir os containers:
+3.  **Inicie os Containers:**
     ```bash
     docker-compose up --build -d
     ```
 
-3.  **Verificar Saúde da Aplicação:**
-    O ambiente agora possui **Health Checks**. A aplicação só será considerada "saudável" (UP) quando o Spring Boot estiver totalmente pronto e conectado ao banco. Verifique o status com:
+4.  **Verifique a Saúde da Aplicação:**
+    A aplicação utiliza **Health Checks** para garantir que o Spring Boot só esteja disponível após a conexão completa com o banco Oracle:
     ```bash
     docker ps
     ```
-    Aguarde até que a coluna `STATUS` mostre `(healthy)` para ambos os containers.
-
-4.  A aplicação estará disponível em `http://localhost:8080/api`.
+    Aguarde o status mudar para `(healthy)`. A API estará disponível em `http://localhost:8080/api`.
 
 ---
 
-## 🚀 DevOps & CI/CD (GitHub Actions)
+## 🐳 Containerização
 
-Este projeto implementa uma pipeline completa de **Integração e Entrega Contínua (CI/CD)** utilizando GitHub Actions.
+A aplicação utiliza **Docker** para garantir consistência entre os ambientes de desenvolvimento, staging e produção.
 
-### Fluxo de Trabalho
-1.  **CI (Integração Contínua):** Disparado em `push` para `main` ou `develop`.
-    *   Sobe um container Oracle XE temporário no Runner.
-    *   Executa o build Maven (`mvn clean verify`).
-    *   Roda testes unitários e de integração.
-    *   Gera o artefato JAR.
+### Estratégias Adotadas
+* **Multi-stage Build:** Utilizamos uma etapa de `build` (Maven) e uma de `runtime` (JRE leve) para reduzir o tamanho da imagem final e aumentar a segurança.
+* **Redes Isoladas:** App e Banco comunicam-se via uma rede bridge privada (`backend-network`).
+* **Resource Limits:** Limites de memória (512MB para a App) configurados para evitar exaustão de recursos.
 
-2.  **CD (Entrega Contínua):** Disparado após o sucesso do CI.
-    *   **Staging:** Deploys automáticos para o servidor de teste em `push` na branch `develop`.
-    *   **Production:** Deploys automáticos para o servidor de produção em `push` na branch `main`.
+### Conteúdo do Dockerfile
+```dockerfile
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-### Configuração de Secrets no GitHub
-Para habilitar o deploy automático, configure os seguintes **Secrets** em seu repositório (**Settings > Secrets and variables > Actions**):
-
-| Secret | Descrição |
-| :--- | :--- |
-| `SSH_PRIVATE_KEY` | Chave privada SSH para acesso aos servidores. |
-| `STAGING_HOST` / `PROD_HOST` | IP ou Hostname dos servidores de Staging/Produção. |
-| `STAGING_USER` / `PROD_USER` | Usuário SSH dos servidores. |
-| `DB_PASS` | Senha do banco de dados (será injetada no `.env` do servidor). |
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
 
 ---
 
-## 🛡️ Segurança e Boas Práticas DevOps
-* **Multi-stage Builds:** Dockerfile otimizado para imagens leves e seguras.
-* **Redes Isoladas:** Comunicação entre App e Banco via rede privada `backend-network`.
-* **Resource Limits:** Limites de memória (512MB para App, 1.5GB para Oracle) configurados via Docker Compose.
-* **Health Checks:** Monitoramento ativo da saúde dos serviços via Spring Actuator.
+## 🚀 Pipeline CI/CD
+
+Utilizamos o **GitHub Actions** como ferramenta de DevOps para automatizar o ciclo de vida da aplicação.
+
+### Funcionamento e Etapas
+1.  **Integração Contínua (CI):**
+    *   **Ferramenta:** GitHub Actions.
+    *   **Trigger:** Push ou Pull Request em `main` e `develop`.
+    *   **Etapas:** Setup do Java 17, levantamento de um Oracle XE temporário, execução de `mvn clean verify` (compilação e testes) e upload do artefato.
+2.  **Entrega Contínua (CD):**
+    *   **Ferramenta:** GitHub Actions via SSH.
+    *   **Trigger:** Sucesso do pipeline de CI.
+    *   **Staging:** Deploy automático na branch `develop`.
+    *   **Production:** Deploy automático na branch `main`.
+    *   **O que faz:** Conecta via SSH no servidor, atualiza o código, gera o `.env` e reinicia os containers via Docker Compose.
+
+---
+
+## 🖼️ Evidências de Funcionamento
+
+Nesta seção, você pode encontrar os registros visuais do funcionamento do projeto:
+
+### Execução e Deploy
+* [Link/Print da Execução Local]
+* [Link/Print do Workflow de CI/CD no GitHub]
+
+### Ambientes
+* **Staging:** [Link/Print do funcionamento no ambiente de teste]
+* **Produção:** [Link/Print da aplicação rodando no servidor final]
+
+---
+
+## 🛡️ Segurança e Boas Práticas
+* **Secrets:** Todas as credenciais sensíveis (senhas, chaves SSH) são gerenciadas via **GitHub Secrets**.
+* **Health Monitoring:** Endpoint `/actuator/health` configurado para monitoramento ativo.
+
