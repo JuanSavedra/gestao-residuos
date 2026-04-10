@@ -3,8 +3,9 @@
 ![Java](https://img.shields.io/badge/Java-17-blue.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-success.svg)
 ![Docker](https://img.shields.io/badge/Docker-blue.svg)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat&logo=amazon-aws&logoColor=white)
 
-Este é um microserviço RESTful desenvolvido em Spring Boot como parte de uma atividade acadêmica. O projeto implementa um sistema de gerenciamento de resíduos, focando no rastreamento, alertas e segurança, utilizando Docker, Spring Security e um banco de dados Oracle.
+Este é um microserviço RESTful desenvolvido em Spring Boot como parte de uma atividade acadêmica. O projeto implementa um sistema de gerenciamento de resíduos, focando no rastreamento, alertas e segurança, utilizando Docker, Spring Security, PostgreSQL e infraestrutura AWS.
 
 ---
 
@@ -25,8 +26,8 @@ O projeto foi baseado no seguinte tema:
 * **Segurança:** Autenticação e Autorização por endpoint usando Spring Security e HTTP Basic Auth (Roles: `ROLE_USER`, `ROLE_ADMIN`, `ROLE_COLETA`).
 * **Validação:** Validação de DTOs (`@Valid`) em nível de Controller (ex: `@NotBlank`, `@Positive`).
 * **Tratamento de Exceções:** Handler global (`@RestControllerAdvice`) para erros de negócio (400 - `BusinessException`), recursos não encontrados (404 - `ResourceNotFoundException`) e erros de validação.
-* **Banco de Dados:** Conexão e persistência em um banco de dados Oracle, com criação automática de tabelas (via JPA/Hibernate).
-* **Containerização (Requisito Mandatório):** Aplicação 100% containerizada com Docker e Docker Compose, incluindo o banco de dados.
+* **Banco de Dados:** Conexão e persistência em um banco de dados PostgreSQL (AWS RDS), com criação automática de tabelas (via JPA/Hibernate).
+* **Containerização (Requisito Mandatório):** Aplicação 100% containerizada com Docker e Docker Compose.
 * **Inicialização de Dados:** O sistema insere dados de teste (usuários e tipos de resíduos) ao iniciar (`DataInitializer.java`).
 
 ---
@@ -34,9 +35,10 @@ O projeto foi baseado no seguinte tema:
 ## 🛠️ Tecnologias Utilizadas
 
 * **Backend:** Java 17, Spring Boot 3
-* **Persistência:** Spring Data JPA (Hibernate), Oracle Database (`gvenzl/oracle-xe:latest`)
-* **Segurança:** Spring Security (HTTP Basic Auth, Roles: `ROLE_USER`, `ROLE_ADMIN`, `ROLE_COLETA`)
-* **DevOps:** GitHub Actions (CI/CD), Docker & Docker Compose
+* **Persistência:** Spring Data JPA (Hibernate), PostgreSQL, AWS RDS (Relational Database Service)
+* **Infraestrutura:** AWS EC2 (Elastic Compute Cloud), Docker & Docker Compose
+* **Segurança:** Spring Security (HTTP Basic Auth, Roles: `ROLE_USER`, `ROLE_ADMIN`, `ROLE_COLETA`), AWS Security Groups
+* **DevOps:** GitHub Actions (CI/CD)
 * **Monitoramento:** Spring Boot Actuator
 * **Auxiliares:** Maven, Lombok, Jakarta Validation
 
@@ -64,7 +66,7 @@ Este projeto utiliza **Docker Compose** para orquestrar a aplicação e o banco 
     ```
 
 4.  **Verifique a Saúde da Aplicação:**
-    A aplicação utiliza **Health Checks** para garantir que o Spring Boot só esteja disponível após a conexão completa com o banco Oracle:
+    A aplicação utiliza **Health Checks** para garantir que o Spring Boot só esteja disponível após a conexão completa com o banco PostgreSQL:
     ```bash
     docker ps
     ```
@@ -79,7 +81,7 @@ A aplicação utiliza **Docker** para garantir consistência entre os ambientes 
 ### Estratégias Adotadas
 * **Multi-stage Build:** Utilizamos uma etapa de `build` (Maven) e uma de `runtime` (JRE leve) para reduzir o tamanho da imagem final e aumentar a segurança.
 * **Redes Isoladas:** App e Banco comunicam-se via uma rede bridge privada (`backend-network`).
-* **Resource Limits:** Limites de memória (512MB para a App) configurados para evitar exaustão de recursos.
+* **Resource Limits:** Limites de memória configurados para garantir estabilidade em instâncias AWS Free Tier.
 
 ### Conteúdo do Dockerfile
 ```dockerfile
@@ -98,34 +100,34 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ---
 
-## 🚀 Pipeline CI/CD
+## 🚀 Pipeline CI/CD (AWS Cloud)
 
-Utilizamos o **GitHub Actions** como ferramenta de DevOps para automatizar o ciclo de vida da aplicação.
+Utilizamos o **GitHub Actions** para automatizar o ciclo de vida da aplicação com foco em infraestrutura cloud.
 
 ### Funcionamento e Etapas
 1.  **Integração Contínua (CI):**
     *   **Ferramenta:** GitHub Actions.
     *   **Trigger:** Push ou Pull Request em `main` e `develop`.
-    *   **Etapas:** Setup do Java 17, levantamento de um Oracle XE temporário, execução de `mvn clean verify` (compilação e testes) e upload do artefato.
+    *   **Etapas:** Setup do Java 17, levantamento de um PostgreSQL temporário via Docker, execução de `mvn clean verify` (compilação e testes) e upload do artefato.
 2.  **Entrega Contínua (CD):**
-    *   **Ferramenta:** GitHub Actions via SSH.
+    *   **Ferramenta:** GitHub Actions via SSH para AWS EC2.
     *   **Trigger:** Sucesso do pipeline de CI.
-    *   **Staging:** Deploy automático na branch `develop`.
-    *   **Production:** Deploy automático na branch `main`.
-    *   **O que faz:** Conecta via SSH no servidor, atualiza o código, gera o `.env` e reinicia os containers via Docker Compose.
+    *   **Infraestrutura:** O deploy é realizado em uma instância **EC2 (Ubuntu/Amazon Linux)** integrada a um banco **RDS PostgreSQL**.
+    *   **O que faz:** Conecta via SSH no servidor AWS, realiza o `git pull`, atualiza as variáveis de ambiente baseadas nos **GitHub Secrets** e reinicia os containers via Docker Compose.
 
 ---
 
 ## 🖼️ Evidências de Funcionamento
 
-Nesta seção, encontram-se as comprovações técnicas da execução e automação do projeto:
+Nesta seção, encontram-se as comprovações técnicas da execução e automação do projeto na nuvem:
+![Visão Geral](<Captura de tela 2026-04-10 192720.png>)
 
 ### 1. Orquestração com Docker Compose
-Status dos containers rodando localmente, evidenciando o uso de volumes e o estado de saúde (`healthy`) do banco Oracle e da aplicação.
+Status dos containers rodando localmente, evidenciando o uso de volumes e o estado de saúde (`healthy`) do banco PostgreSQL e da aplicação.
 ![Status dos Containers](<Captura de tela 2026-03-30 175106.png>)
 
 ### 2. Monitoramento de Saúde (Health Check)
-Resposta do endpoint `/actuator/health` via navegador, confirmando que a aplicação está "UP" e integrada com o banco de dados.
+Resposta do endpoint `/actuator/health` via navegador, confirmando que a aplicação está "UP" e integrada com o banco de dados RDS.
 ![Endpoint Health Check](<Captura de tela 2026-03-30 175119.png>)
 
 ### 3. Integração Contínua (CI) com GitHub Actions
@@ -133,16 +135,16 @@ Pipeline de build e testes automatizados executada com sucesso no GitHub, valida
 ![Pipeline de CI com Sucesso](<Captura de tela 2026-03-30 175241.png>)
 ![Pipeline de CI com Sucesso](<Captura de tela 2026-03-30 182543.png>)
 
-### 4. Entrega Contínua (CD) e Infraestrutura
-Registro da tentativa de deploy automático. O pipeline de CD foi configurado corretamente, porém, a conexão SSH final foi interrompida (`i/o timeout`) devido às restrições de firewall/NAT do roteador local, que impede o acesso externo ao ambiente doméstico. Este comportamento é esperado em ambientes de desenvolvimento que não possuem um IP público exposto.
-Eu poderia configurar o servidor AWS como foi ensinado, porém, tive limitações no serviço e disseram que aquilo geraria cobranças.
-![Log de Deploy via SSH](<Captura de tela 2026-03-30 182727.png>)
-![Log de Deploy via SSH](<Captura de tela 2026-03-30 182809.png>)
+### 4. Entrega Contínua (CD) e Infraestrutura AWS
+Registro do deploy automático realizado com sucesso na AWS. Diferente das versões anteriores, a infraestrutura foi migrada para **AWS EC2** e **AWS RDS**, resolvendo os problemas de conectividade e garantindo alta disponibilidade dentro do Free Tier.
+![Log de Deploy via SSH AWS](<Captura de tela 2026-04-10 192457.png>)
+![Log de Deploy via SSH AWS](<Captura de tela 2026-04-10 192733.png>)
 
 ---
 
 ## 🛡️ Segurança e Boas Práticas
-* **Secrets:** Todas as credenciais sensíveis (senhas, chaves SSH) são gerenciadas via **GitHub Secrets**.
+* **Secrets:** Todas as credenciais sensíveis (senhas RDS, chaves SSH AWS) são gerenciadas via **GitHub Secrets**.
+* **Infraestrutura:** Uso de **Security Groups** da AWS para restringir o acesso apenas às portas necessárias (22 para SSH e 8080 para a API).
 * **Health Monitoring:** Endpoint `/actuator/health` configurado para monitoramento ativo.
 
 ---
@@ -152,7 +154,7 @@ Eu poderia configurar o servidor AWS como foi ensinado, porém, tive limitaçõe
 - [x] **Containerização:** Dockerfile funcional com multi-stage build.
 - [x] **Orquestração:** Docker Compose configurado com redes, volumes e limites de recursos.
 - [x] **CI (Integração Contínua):** Pipeline no GitHub Actions realizando build e testes (Maven).
-- [x] **CD (Entrega Contínua):** Pipeline no GitHub Actions configurada para deploy via SSH.
+- [x] **CD (Entrega Contínua):** Pipeline no GitHub Actions configurada para deploy via SSH pela AWS.
 - [x] **Segurança:** Gerenciamento de credenciais via GitHub Secrets e .env.
 - [x] **Monitoramento:** Health Checks configurados via Spring Actuator e integrados ao Docker.
 - [x] **Documentação:** README.md detalhado com instruções de execução e arquitetura DevOps.
