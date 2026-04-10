@@ -120,25 +120,25 @@ Utilizamos o **GitHub Actions** para automatizar o ciclo de vida da aplicação 
 ## 🖼️ Evidências de Funcionamento
 
 Nesta seção, encontram-se as comprovações técnicas da execução e automação do projeto na nuvem:
-![Visão Geral](<Captura de tela 2026-04-10 192720.png>)
+![Visão Geral](<img/Captura de tela 2026-04-10 192720.png>)
 
 ### 1. Orquestração com Docker Compose
 Status dos containers rodando localmente, evidenciando o uso de volumes e o estado de saúde (`healthy`) do banco PostgreSQL e da aplicação.
-![Status dos Containers](<Captura de tela 2026-03-30 175106.png>)
+![Status dos Containers](<img/Captura de tela 2026-03-30 175106.png>)
 
 ### 2. Monitoramento de Saúde (Health Check)
 Resposta do endpoint `/actuator/health` via navegador, confirmando que a aplicação está "UP" e integrada com o banco de dados RDS.
-![Endpoint Health Check](<Captura de tela 2026-03-30 175119.png>)
+![Endpoint Health Check](<img/Captura de tela 2026-03-30 175119.png>)
 
 ### 3. Integração Contínua (CI) com GitHub Actions
 Pipeline de build e testes automatizados executada com sucesso no GitHub, validando a integridade do código Java/Maven.
-![Pipeline de CI com Sucesso](<Captura de tela 2026-03-30 175241.png>)
-![Pipeline de CI com Sucesso](<Captura de tela 2026-03-30 182543.png>)
+![Pipeline de CI com Sucesso](<img/Captura de tela 2026-03-30 175241.png>)
+![Pipeline de CI com Sucesso](<img/Captura de tela 2026-03-30 182543.png>)
 
 ### 4. Entrega Contínua (CD) e Infraestrutura AWS
 Registro do deploy automático realizado com sucesso na AWS. Diferente das versões anteriores, a infraestrutura foi migrada para **AWS EC2** e **AWS RDS**, resolvendo os problemas de conectividade e garantindo alta disponibilidade dentro do Free Tier.
-![Log de Deploy via SSH AWS](<Captura de tela 2026-04-10 192457.png>)
-![Log de Deploy via SSH AWS](<Captura de tela 2026-04-10 192733.png>)
+![Log de Deploy via SSH AWS](<img/Captura de tela 2026-04-10 192457.png>)
+![Log de Deploy via SSH AWS](<img/Captura de tela 2026-04-10 192733.png>)
 
 ---
 
