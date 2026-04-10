@@ -35,16 +35,23 @@ jobs:
           username: ${{ env.USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            sudo mkdir -p /app/gestao-residuos
+            sudo chown ec2-user:ec2-user /app/gestao-residuos
             cd /app/gestao-residuos
-            git pull origin ${{ github.ref_name }}
-            
+
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git pull origin ${{ github.ref_name }}
+            fi
+
             # Criar arquivo .env no servidor com os secrets
             echo "DB_URL=${{ secrets.DB_URL }}" > .env
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASS=${{ secrets.DB_PASS }}" >> .env
             echo "ENVIRONMENT=${{ env.ENV }}" >> .env
-            
+
             docker-compose down
             docker-compose up -d --build --remove-orphans
-            
+
             echo "Deploy em ${{ env.ENV }} concluído com sucesso!"
