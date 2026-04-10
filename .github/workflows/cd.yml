@@ -39,13 +39,12 @@ jobs:
             git pull origin ${{ github.ref_name }}
             
             # Criar arquivo .env no servidor com os secrets
-            echo "DB_URL=jdbc:oracle:thin:@oracle-db:1521:XE" > .env
-            echo "DB_USER=system" >> .env
+            echo "DB_URL=${{ secrets.DB_URL }}" > .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASS=${{ secrets.DB_PASS }}" >> .env
-            echo "ORACLE_PASSWORD=${{ secrets.DB_PASS }}" >> .env
             echo "ENVIRONMENT=${{ env.ENV }}" >> .env
             
             docker-compose down
-            docker-compose up -d --build
+            docker-compose up -d --build --remove-orphans
             
             echo "Deploy em ${{ env.ENV }} concluído com sucesso!"

@@ -11,14 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      # Podemos subir o Oracle aqui para testes de integração se necessário, 
-      # mas por enquanto vamos focar no build e testes unitários.
-      oracle:
-        image: gvenzl/oracle-xe:latest
+      postgres:
+        image: postgres:15-alpine
         env:
-          ORACLE_PASSWORD: oracle
+          POSTGRES_DB: gestao_residuos
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
         ports:
-          - 1521:1521
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - uses: actions/checkout@v4
@@ -31,7 +36,7 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      run: mvn -B clean verify -Dspring.datasource.url=jdbc:oracle:thin:@localhost:1521/XE -Dspring.datasource.username=system -Dspring.datasource.password=oracle
+      run: mvn -B clean verify -Dspring.datasource.url=jdbc:postgresql://localhost:5432/gestao_residuos -Dspring.datasource.username=postgres -Dspring.datasource.password=password
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4

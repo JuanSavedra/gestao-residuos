@@ -7,13 +7,14 @@ services:
     ports:
       - "${SERVER_PORT:-8080}:8080"
     environment:
-      - DB_URL=${DB_URL:-jdbc:oracle:thin:@oracle-db:1521:XE}
-      - DB_USER=${DB_USER:-system}
-      - DB_PASS=${DB_PASS:-oracle}
+      - DB_URL=${DB_URL:-jdbc:postgresql://postgres-db:5432/gestao_residuos}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASS=${DB_PASS:-postgres}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
       - SERVER_PORT=8080
     depends_on:
-      - oracle-db
+      postgres-db:
+        condition: service_healthy
     networks:
       - backend-network
     healthcheck:
@@ -25,33 +26,34 @@ services:
     deploy:
       resources:
         limits:
-          memory: 768M
+          memory: 512M
     restart: on-failure
 
-  oracle-db:
-    image: gvenzl/oracle-xe:latest
-    container_name: oracle-db
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: postgres-db
     ports:
-      - "1521:1521"
+      - "5432:5432"
     environment:
-      - ORACLE_PASSWORD=${ORACLE_PASSWORD:-oracle}
+      - POSTGRES_DB=gestao_residuos
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASS:-postgres}
     volumes:
-      - oracle-data:/opt/oracle/oradata
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - backend-network
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -L system/${ORACLE_PASSWORD:-oracle}@//localhost:1521/XE"]
-      interval: 30s
-      timeout: 20s
-      retries: 15
-      start_period: 90s
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d gestao_residuos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     deploy:
       resources:
         limits:
-          memory: 2048M
+          memory: 256M
 
 volumes:
-  oracle-data:
+  postgres-data:
 
 networks:
   backend-network:
