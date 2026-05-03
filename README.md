@@ -159,3 +159,25 @@ Registro do deploy automático realizado com sucesso na AWS. Diferente das vers�
 - [x] **Monitoramento:** Health Checks configurados via Spring Actuator e integrados ao Docker.
 - [x] **Documentação:** README.md detalhado com instruções de execução e arquitetura DevOps.
 - [x] **Evidências:** Prints de funcionamento e execução do pipeline anexados.
+- [x] **Testes Automatizados:** Implementação de testes de aceitação e de API com BDD (Gherkin/Cucumber) e RestAssured.
+
+---
+
+## 🧪 Testes Automatizados (BDD com Gherkin)
+
+O projeto utiliza **Cucumber** e **RestAssured** para testes de aceitação e de API. Os testes validam:
+*   Status codes.
+*   Corpo das respostas (JSON).
+*   Contratos da API (JSON Schema).
+*   Regras de segurança (Basic Auth e Roles).
+
+### Como rodar os testes localmente:
+
+1.  Certifique-se de que o banco de dados está rodando (`docker-compose up -d`).
+2.  No terminal, execute:
+    ```bash
+    mvn test -Dtest=CucumberTestRunner
+    ```
+
+Os cenários de teste estão localizados em `src/test/resources/features` e as implementações em `src/test/java/com/example/gestaoresiduos/cucumber/steps`.
+
