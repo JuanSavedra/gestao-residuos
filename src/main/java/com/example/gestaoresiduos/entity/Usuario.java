@@ -26,6 +26,7 @@ public class Usuario {
   @Column(nullable = false, unique = true)
   private String email;
 
+  @com.fasterxml.jackson.annotation.JsonIgnore
   @NotBlank(message = "Senha é obrigatória")
   @Size(min = 6)
   @Column(nullable = false)
@@ -35,6 +36,7 @@ public class Usuario {
   @Column(nullable = false)
   private Role role;
 
+  @com.fasterxml.jackson.annotation.JsonIgnore
   @OneToMany(mappedBy = "usuario")
   private List<RegistroDescarte> registros;
 }
