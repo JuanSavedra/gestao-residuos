@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": { "type": "number" },
+    "dataHora": { "type": "string" },
+    "quantidadeKg": { "type": "number" },
+    "usuario": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "nome": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "pontoDeColeta": { "type": "object" },
+    "tipoDeResiduo": { "type": "object" }
+  },
+  "required": ["id", "dataHora", "quantidadeKg", "usuario", "pontoDeColeta", "tipoDeResiduo"]
+}
