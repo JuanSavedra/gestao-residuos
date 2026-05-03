@@ -19,6 +19,7 @@ public class ResiduosSteps extends CucumberSpringConfiguration {
     @Dado("que a API de resíduos está disponível")
     public void apiDisponivel() {
         RestAssured.port = port;
+        context.port = port;
         context.reset();
     }
 

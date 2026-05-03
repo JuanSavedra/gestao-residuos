@@ -8,6 +8,7 @@ import static io.restassured.RestAssured.given;
 
 @Component
 public class TestContext {
+    public int port;
     private Response response;
     private RequestSpecification request = given();
 
@@ -29,6 +30,6 @@ public class TestContext {
 
     public void reset() {
         response = null;
-        request = given();
+        request = given().port(port);
     }
 }

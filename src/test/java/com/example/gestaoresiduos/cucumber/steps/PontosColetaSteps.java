@@ -21,6 +21,7 @@ public class PontosColetaSteps extends CucumberSpringConfiguration {
     @Dado("que a API de pontos de coleta está disponível")
     public void apiDisponivel() {
         RestAssured.port = port;
+        context.port = port;
         context.reset();
     }
 

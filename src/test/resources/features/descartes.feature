@@ -17,6 +17,7 @@ Funcionalidade: Registro de Descartes
     Então o status code deve ser 201
     E o corpo da resposta deve validar o contrato "schemas/descarte_schema.json"
     E a quantidadeKg no corpo da resposta deve ser "5.5"
+    E o nível do ponto de coleta 1 deve ter aumentado em "5.5" kg
 
   Cenário: Tentar registrar descarte sem autenticação
     Quando eu envio uma requisição POST para "/api/descartes" sem autenticação

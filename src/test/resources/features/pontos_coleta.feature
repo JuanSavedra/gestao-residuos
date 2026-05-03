@@ -24,3 +24,5 @@ Funcionalidade: Gestão de Pontos de Coleta
     Dado que estou autenticado com o usuário "user@gestao.com" e senha "user123"
     Quando eu solicito para esvaziar o ponto com ID 1
     Então o status code deve ser 403
+
+

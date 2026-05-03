@@ -5,11 +5,17 @@ Funcionalidade: Busca de Instruções de Resíduos
   Eu quero saber como descartar corretamente diferentes tipos de resíduos
   Para evitar a contaminação do meio ambiente
 
-  Cenário: Buscar instruções para um tipo de resíduo existente
+  Esquema do Cenário: Buscar instruções para diferentes tipos de resíduos
     Dado que a API de resíduos está disponível
-    Quando eu solicito as instruções para o resíduo com ID 1
+    Quando eu solicito as instruções para o resíduo com ID <id>
     Então o status code deve ser 200
-    E o corpo da resposta deve conter "Lavar e secar embalagens"
+    E o corpo da resposta deve conter "<instrucao>"
+
+    Exemplos:
+      | id | instrucao                       |
+      | 1  | Lavar e secar embalagens        |
+      | 2  | Cuidado ao descartar vidros     |
+      | 3  | Restos de alimentos             |
 
   Cenário: Buscar instruções para um tipo de resíduo inexistente
     Dado que a API de resíduos está disponível
