@@ -5,7 +5,7 @@
 ![Docker](https://img.shields.io/badge/Docker-blue.svg)
 ![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat&logo=amazon-aws&logoColor=white)
 
-Este é um microserviço RESTful desenvolvido em Spring Boot como parte de uma atividade acadêmica. O projeto implementa um sistema de gerenciamento de resíduos, focando no rastreamento, alertas e segurança, utilizando Docker, Spring Security, PostgreSQL e infraestrutura AWS.
+Este é um microserviço RESTful desenvolvido em Spring Boot. O projeto implementa um sistema de gerenciamento de resíduos, focando no rastreamento, alertas e segurança, utilizando Docker, Spring Security, PostgreSQL e infraestrutura AWS.
 
 ---
 
